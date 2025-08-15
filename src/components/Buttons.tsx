@@ -1,9 +1,20 @@
 import React from "react";
 import { Button } from "./ui/button";
 
-const Buttons = ({ text }: { text: string }) => {
+const Buttons = ({
+  text,
+  handlePress,
+}: {
+  text: string;
+  handlePress: () => void;
+}) => {
   return (
-    <Button className="w-full h-[2.75rem] text-lg rounded-md">{text}</Button>
+    <Button
+      onClick={handlePress}
+      className="w-full h-[2.75rem] text-lg rounded-md"
+    >
+      {text}
+    </Button>
   );
 };
 

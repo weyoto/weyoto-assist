@@ -1,11 +1,7 @@
-//import AuthFlow from "@/components/auth/AuthFlow";
+import React from "react";
 
-import GetStarted from "@/components/auth/";
+const page = () => {
+  return <div>page</div>;
+};
 
-export default function HomePage() {
-  return (
-    <div className="min-h-screen bg-background">
-      <GetStarted />
-    </div>
-  );
-}
+export default page;

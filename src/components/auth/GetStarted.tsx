@@ -2,8 +2,13 @@ import Image from "next/image";
 import React from "react";
 import Buttons from "../Buttons";
 import Inputs from "../Inputs";
+import { useBoundStore } from "@/store/store";
 
 const GetStarted = () => {
+  const setIsPage = useBoundStore((state) => state.setIsPage);
+  const handlPress = () => {
+    setIsPage("verifyEmail");
+  };
   return (
     <div className="p-6">
       <nav className="gap-[0.75rem] flex flex-col mb-6">
@@ -22,7 +27,7 @@ const GetStarted = () => {
           By proceeding you agree with our{" "}
           <span>Terms of use and Privacy policy</span>
         </p>
-        <Buttons text="Continue" />
+        <Buttons handlePress={handlPress} text="Continue" />
       </div>
     </div>
   );

@@ -2,8 +2,13 @@ import Image from "next/image";
 import React from "react";
 import Inputs from "../Inputs";
 import Buttons from "../Buttons";
+import { useRouter } from "next/navigation";
 
 const VerifyEmail = () => {
+  const router = useRouter();
+  const handlePress = () => {
+    router.push("/");
+  };
   return (
     <div className="p-6">
       <div className="flex flex-col items-center justify-center gap-[0.75rem] mb-[2rem]">
@@ -21,7 +26,7 @@ const VerifyEmail = () => {
       </div>
 
       <div className="gap-5 flex flex-col">
-        <Buttons text="Verify" />
+        <Buttons handlePress={handlePress} text="Verify" />
         <p className="text-center">
           Didnt get your code? <span>Send a new code</span>
         </p>
