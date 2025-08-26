@@ -1,13 +1,31 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import Inputs from "../Inputs";
 import Buttons from "../Buttons";
 import { useRouter } from "next/navigation";
+import { verifyCode } from "@/networking/endpoints/verifyCode";
+import { useBoundStore } from "@/store/store";
+import { requestCode } from "@/networking/endpoints/requestCode";
 
 const VerifyEmail = () => {
   const router = useRouter();
-  const handlePress = () => {
-    router.push("/");
+  const [code, setCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const loginEmail = useBoundStore((state) => state.email);
+
+  const handlePress = async () => {
+    try {
+      setIsLoading(true);
+      const result = await verifyCode(loginEmail, code);
+
+      if (!result) return;
+
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <div className="p-6">
@@ -22,13 +40,26 @@ const VerifyEmail = () => {
 
       <div className="mb-6">
         <p>Enter six-digits code</p>
-        <Inputs placeholder="******" />
+        <Inputs value={code} setValue={setCode} placeholder="******" />
       </div>
 
       <div className="gap-5 flex flex-col">
-        <Buttons handlePress={handlePress} text="Verify" />
+        <Buttons
+          isLoading={isLoading}
+          disabled={!code}
+          handlePress={handlePress}
+          text="Verify"
+        />
         <p className="text-center">
-          Didnt get your code? <span>Send a new code</span>
+          Didnt get your code?{" "}
+          <span
+            onClick={() => {
+              requestCode(loginEmail);
+            }}
+            className="font-bold"
+          >
+            Send a new code
+          </span>
         </p>
       </div>
     </div>

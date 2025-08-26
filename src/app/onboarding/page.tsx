@@ -1,9 +1,9 @@
+//import { BusinessOnboarding } from "@/components/business-onboarding";
 import BusinessOnboarding from "@/components/business-onboarding";
-//import BusinessDashboard from "@/components/Homepage/Home";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return <BusinessOnboarding />;
 };
 
-export default page;
+export default Page;

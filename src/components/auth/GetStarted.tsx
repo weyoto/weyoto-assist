@@ -1,14 +1,32 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import Buttons from "../Buttons";
 import Inputs from "../Inputs";
 import { useBoundStore } from "@/store/store";
+import { requestCode } from "@/networking/endpoints/requestCode";
 
 const GetStarted = () => {
   const setIsPage = useBoundStore((state) => state.setIsPage);
-  const handlPress = () => {
-    setIsPage("verifyEmail");
+  const loginEmail = useBoundStore((state) => state.email);
+  const setLoginEmail = useBoundStore((state) => state.setEmail);
+  const [isLoading, setIsLoading] = useState(false);
+  const handlPress = async () => {
+    try {
+      setIsLoading(true);
+      const result = await requestCode(loginEmail);
+
+      if (!result) return;
+
+      setIsPage("verifyEmail");
+    } catch {
+    } finally {
+      setIsLoading(false);
+    }
+
+    //console.log({ result });
+    //
   };
+
   return (
     <div className="p-6">
       <nav className="gap-[0.75rem] flex flex-col mb-6">
@@ -19,7 +37,11 @@ const GetStarted = () => {
 
       <div className="gap-[0.5rem]">
         <p>Your email</p>
-        <Inputs placeholder="Ex. ehigieedoma@yourmail.com" />
+        <Inputs
+          value={loginEmail}
+          setValue={setLoginEmail}
+          placeholder="Ex. ehigieedoma@yourmail.com"
+        />
       </div>
 
       <div className="bottom-10 absolute right-6 left-6 ">
@@ -27,7 +49,12 @@ const GetStarted = () => {
           By proceeding you agree with our{" "}
           <span>Terms of use and Privacy policy</span>
         </p>
-        <Buttons handlePress={handlPress} text="Continue" />
+        <Buttons
+          disabled={!loginEmail}
+          handlePress={handlPress}
+          text="Continue"
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );
