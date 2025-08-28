@@ -1,18 +1,115 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "./ui/button";
-import { Send, Upload } from "lucide-react";
+import { Check, Send, Upload } from "lucide-react";
 import { Input } from "./ui/input";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { useBoundStore } from "@/store/store";
+import { BusinessDoc } from "@/types/BusinessDocsType";
+
+/* interface BusinessDoc {
+  id: string;
+  name: string;
+  type: "pdf" | "docx" | "doc";
+} */
 
 const ChatBox = () => {
   const router = useRouter();
-  const [message, setMessage] = useState("");
+  const pathname = usePathname();
+  const chatText = useBoundStore((state) => state.chatText);
+  const setChatText = useBoundStore((state) => state.setChatText);
+  const setIsBusinessDetails = useBoundStore(
+    (state) => state.setBusinessDetails
+  );
+  const tempBusinessDocs = useBoundStore((state) => state.tempBusinessDocs);
+
+  const setTempBusinessDocs = useBoundStore(
+    (state) => state.setTempBusinessDocs
+  );
+
+  /*  const [docs, setDocs] = useState<BusinessDoc[]>([
+    { id: "1", name: "Lisa's Cakes pricing doc.pdf", type: "pdf" },
+    { id: "2", name: "Lisa's Cakes contact details.docx", type: "docx" },
+  ]); */
+
+  //const [selectedFile, setSelectedFile] = useState(null);
+
+  const isAddDetailsPage = pathname == "/business/add-details";
+
+  /*   const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
 
   const handleSendMessage = () => {
-    console.log("Sending message:", message);
-    setMessage("");
+    console.log("Sending message:", chatText);
+    setChatText("");
+  }; */
+
+  const addBusinessDetails = () => {
+    setIsBusinessDetails(chatText);
+    setChatText("");
   };
+
+  const placeholder = isAddDetailsPage
+    ? "Type something like: “We operate in Lagos"
+    : "Ask your assistant anything";
+
+  const SendIcon = isAddDetailsPage ? Check : Send;
+  /*   const handleUpload = async () => {
+    if (!selectedFile) {
+      alert("Please select a file first!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", selectedFile); // 'file' is the field name your backend expects
+
+    try {
+      const response = await fetch("/api/upload", {
+        // Replace with your actual upload endpoint
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert("File uploaded successfully!");
+        // Handle successful upload (e.g., clear selected file, update UI)
+      } else {
+        alert("File upload failed.");
+        // Handle upload error
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      alert("An error occurred during upload.");
+    }
+  };
+ */
+  const handleUploadDocs = () => {
+    // Simulate file upload
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = true;
+    input.accept = ".pdf,.doc,.docx";
+    input.onchange = (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files) {
+        Array.from(files).forEach((file, index) => {
+          const url = URL.createObjectURL(file);
+          const newDoc: BusinessDoc = {
+            id: Date.now().toString() + index,
+            name: file.name,
+            type: file.name.endsWith(".pdf") ? "pdf" : "docx",
+            file: file,
+            url: url,
+          };
+          setTempBusinessDocs([...tempBusinessDocs, newDoc]);
+        });
+      }
+    };
+    input.click();
+  };
+
+  console.log({ tempBusinessDocs });
 
   return (
     <div className="fixed bottom-0 left-5 right-5 bg-white ">
@@ -41,9 +138,9 @@ const ChatBox = () => {
         <div className="flex items-center gap-2">
           <Input
             type="text"
-            placeholder="Ask your assistant anything"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            placeholder={placeholder}
+            value={chatText}
+            onChange={(e) => setChatText(e.target.value)}
             className="flex-1 border-0"
           />
         </div>
@@ -51,12 +148,19 @@ const ChatBox = () => {
         {/* Bottom Actions */}
         <div className="flex items-center justify-between p-4">
           <Button
+            onClick={handleUploadDocs}
             className="flex items-center gap-2 bg-gray-100 text-gray-700 hover:bg-gray-200 border border-black"
             variant="secondary"
           >
             <Upload className="w-4 h-4" />
             Upload docs
           </Button>
+          {/*   <Input
+            className="flex items-center gap-2 bg-gray-100 text-gray-700 hover:bg-gray-200 border border-black"
+            type="file"
+            onEnded={() => console.log("uploaded")}
+            placeholder=" Upload docs"
+          /> */}
           <Button
             onClick={() => router.push(`/business/add-details`)}
             className="bg-gray-100 text-gray-700 hover:bg-gray-200 border border-black"
@@ -65,12 +169,12 @@ const ChatBox = () => {
             Add business details
           </Button>
           <Button
-            onClick={handleSendMessage}
+            onClick={addBusinessDetails}
             size="sm"
             className="bg-[#D9D9D9] p-[0.5rem] rounded-full text-gray-700 hover:bg-gray-200 "
             variant="secondary"
           >
-            <Send size={16} className="w-6 h-6" />
+            <SendIcon size={16} className="w-6 h-6" />
           </Button>
         </div>
       </div>
