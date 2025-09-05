@@ -6,8 +6,10 @@ import { useBoundStore } from "@/store/store";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { BusinessDoc } from "@/types/BusinessDocsType";
+import { useRouter } from "next/navigation";
 
 const AddBusinessDetails = () => {
+  const router = useRouter();
   const businessDetails = useBoundStore((state) => state.businessDetails);
   const setBusinessDetails = useBoundStore((state) => state.setBusinessDetails);
   const setChatText = useBoundStore((state) => state.setChatText);
@@ -65,10 +67,17 @@ const AddBusinessDetails = () => {
 
   const businessDetailsLength = businessDetails ? 1 : 0;
 
+  const goBack = () => {
+    router.back();
+  };
+
   return (
     <div className="bg-white gap-[5rem] p-6 ">
       {/* Welcome Section */}
 
+      <button onClick={goBack} className="flex justify-end w-full ">
+        <X className="h-6 w-6 text-black " />
+      </button>
       <div className="space-y-2 ">
         <h1 className="text-2xl font-semibold text-gray-900">
           Business details & docs

@@ -1,22 +1,18 @@
 import { toast } from "sonner";
 import { baseUrl } from "../baseUrl";
-import Cookies from "universal-cookie";
+import { ViewBusinessDetailsReponse } from "@/types/ViewBusinessDetailsResult";
 
-export const verifyCode = async (email: string, code: string) => {
-  const today = new Date();
-  const twoWeeksFromToday = new Date(today);
-  const cookies = new Cookies();
+export const viewBusinessDetails = async (): Promise<
+  ViewBusinessDetailsReponse | undefined
+> => {
   try {
-    const response = await fetch(`${baseUrl}/auth/verify-code`, {
-      method: "POST",
+    const response = await fetch(`${baseUrl}/business/view-details`, {
+      method: "GET",
       headers: {
         accept: "Application/json",
         "content-type": "Application/json",
+        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNDYxOTk3NzMtZDMzMC00ODU4LWJhN2YtYWE5NzNjNDA4MzkxIiwiZXhwIjoxNzcyNjA2NjY5fQ.nmw2alFJCd4LkFy81iuKFmRCw1-HxDeDmMaBnGBR418"}`,
       },
-      body: JSON.stringify({
-        email,
-        code,
-      }),
     });
 
     const result = await response.json();

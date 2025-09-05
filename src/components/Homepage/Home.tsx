@@ -1,11 +1,47 @@
 "use client";
 
-import { useState } from "react";
-import { Menu, Share, Upload, Send } from "lucide-react";
+//import { useState } from "react";
+import { Menu, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
+import { useQueries } from "@tanstack/react-query";
+import { viewBusinessDetails } from "@/networking/endpoints/ViewBusinessDetails";
+import { viewBusinessProfile } from "@/networking/endpoints/ViewBusinessProfile";
+import { viewBusinessInquiries } from "@/networking/endpoints/ViewBuinessInquiries";
 
 export default function BusinessDashboard() {
+  const router = useRouter();
+
+  const goToProfile = () => {
+    router.push("/profile");
+  };
+
+  const results = useQueries({
+    queries: [
+      { queryKey: ["businessProfile"], queryFn: viewBusinessProfile },
+      { queryKey: ["businessInquiries"], queryFn: viewBusinessInquiries },
+      { queryKey: ["businessDetails"], queryFn: viewBusinessDetails },
+      // { queryKey: ["todos"], queryFn: fetchTodos },
+    ],
+  });
+
+  const [businessProfile, businessInquiries, businessDetails] = results;
+  console.log({ businessDetails: businessDetails.data });
+
+  if (
+    businessProfile.isLoading ||
+    businessInquiries.isLoading ||
+    businessDetails.isLoading
+  )
+    return "Loading...";
+
+  if (
+    businessProfile.error ||
+    businessInquiries.error ||
+    businessDetails.isError
+  )
+    return "An error has occurred: "; //+ error.message;
+
   return (
     <div className="min-h-screen bg-white">
       <div className="bg-red-500 text-white text-center py-2 px-4">
@@ -17,9 +53,9 @@ export default function BusinessDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-100">
         <Menu className="w-6 h-6 text-gray-600" />
-        <div className="flex items-center gap-2">
+        <div onClick={goToProfile} className="flex items-center gap-2">
           <span className="text-lg font-medium text-gray-900">
-            Lisa&apos;s Cakes
+            {businessProfile.data?.business.name}
           </span>
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
         </div>
@@ -30,7 +66,7 @@ export default function BusinessDashboard() {
         {/* Welcome Section */}
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold text-gray-900">
-            Hi, Lisa&apos;s Cakes 👋
+            Hi, {businessProfile.data?.business.name} 👋
           </h1>
           <p className="text-gray-600 text-sm leading-relaxed">
             I&apos;m your AI assistant, helping you answer your customer
@@ -42,9 +78,12 @@ export default function BusinessDashboard() {
         <div className="bg-[#EEEEEE] p-[1rem] rounded-2xl">
           <div className="space-y-2">
             <p className="text-gray-900 font-bold">
-              You have 0 answered inquiry this week!
+              You have {businessInquiries.data?.unanswered} answered inquiry
+              this week!
             </p>
-            <p className="text-gray-500 text-sm">• 0 inquiry at the moment</p>
+            <p className="text-gray-500 text-sm">
+              • {businessInquiries.data?.count} inquiry at the moment
+            </p>
           </div>
           {/* Customer Inquiries Section */}
           <div className="bg-[#E3E3E3] rounded-lg p-4 space-y-2 mt-[0.5rem]">
@@ -61,13 +100,15 @@ export default function BusinessDashboard() {
         <div className="space-y-4 bg-[#EEEEEE] p-[1rem] rounded-2xl">
           <div className="space-y-2">
             <p className="text-gray-900 font-medium">
-              You have 0 business details & docs
+              You have {businessDetails.data?.details?.length} business details
+              & docs
             </p>
             <p className="text-gray-500 text-sm">
               To get smarter, I need to know more about your business.
             </p>
           </div>
           <Button
+            onClick={() => router.push(`/business/add-details`)}
             className="p-[0.5rem] border border-black rounded-md mt-[0.625rem]"
             variant="secondary"
           >

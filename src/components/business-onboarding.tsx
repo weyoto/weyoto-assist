@@ -1,25 +1,55 @@
 "use client";
 
-import { useState } from "react";
+//import { useState } from "react";
 import { Menu, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 //import Inputs from "./Inputs";
 import Buttons from "./Buttons";
+import { useBoundStore } from "@/store/store";
+import { setupBusiness } from "@/networking/endpoints/setupBusiness";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+//import { viewUser } from "@/networking/endpoints/viewUser";
 
 export default function BusinessOnboarding() {
-  const [businessName, setBusinessName] = useState("");
+  /*   const [businessName, setBusinessName] = useState("");
   const [businessDescription, setBusinessDescription] = useState("");
+  
+ */
 
-  const handleSaveBusinessName = () => {
-    // Handle saving business name
-    console.log("Saving business name:", businessName);
-  };
+  const router = useRouter();
+  const setupName = useBoundStore((state) => state.setupName);
+  const setupDescription = useBoundStore((state) => state.setupDescription);
 
-  const handleSaveBusinessDescription = () => {
-    // Handle saving business description
-    console.log("Saving business description:", businessDescription);
+  const setSetupName = useBoundStore((state) => state.setSetupName);
+  const setSetupDescription = useBoundStore(
+    (state) => state.setSetupDescription
+  );
+
+  const isSettingUp = useBoundStore((state) => state.isSettingUp);
+  const setIsSettingUp = useBoundStore((state) => state.setIsSettingUp);
+
+  /*   useEffect(() => {
+    viewUser();
+  }, []); */
+
+  const handleSetupBusiness = async () => {
+    try {
+      setIsSettingUp(true);
+      const result = await setupBusiness(setupName, setupDescription);
+
+      if (!result) return;
+
+      if (setupName && setupDescription) router.push("/business");
+
+      console.log({ result });
+    } catch {
+      toast.error("An Error occured");
+    } finally {
+      setIsSettingUp(false);
+    }
   };
 
   return (
@@ -64,8 +94,8 @@ export default function BusinessOnboarding() {
             <Input
               type="text"
               placeholder="Enter business name"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
+              value={setupName}
+              onChange={(e) => setSetupName(e.target.value)}
               className="w-full bg-white h-[2.75rem]"
             />
 
@@ -77,14 +107,14 @@ export default function BusinessOnboarding() {
             >
               Save business name
             </Button> */}
-            <div className="w-1/2">
+            {/*   <div className="w-1/2">
               <Buttons
                 handlePress={handleSaveBusinessName}
                 disabled
                 isLoading={false}
                 text="Save business name"
               />
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -102,19 +132,25 @@ export default function BusinessOnboarding() {
           <div className="space-y-3">
             <Textarea
               placeholder="Describe your business..."
-              value={businessDescription}
-              onChange={(e) => setBusinessDescription(e.target.value)}
+              value={setupDescription}
+              onChange={(e) => setSetupDescription(e.target.value)}
               className="w-full min-h-[100px] resize-none"
             />
-            <Button
-              onClick={handleSaveBusinessDescription}
+            {/*  <Button
+              onClick={handleSetupBusiness}
               //  className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200"
               //variant="secondary"
             >
               Save business description
-            </Button>
+            </Button> */}
           </div>
         </div>
+        <Buttons
+          handlePress={handleSetupBusiness}
+          disabled={isSettingUp || !setupName || !setupDescription}
+          isLoading={isSettingUp}
+          text="Save business Details"
+        />
       </div>
 
       {/* Footer */}

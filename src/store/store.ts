@@ -9,11 +9,22 @@ import {
   AddBusinessDetailsSliceState,
   createAddBusinessDetailsSliceState,
 } from "./slice/addBusinessDetailsSlice";
+import {
+  BusinessSetupSliceAction,
+  BusinessSetupSliceState,
+  createBusinessSetupSlice,
+} from "./slice/businessSetupSlice";
 
-type StoreState = AuthSliceState & AddBusinessDetailsSliceState;
+type StoreState = AuthSliceState &
+  AddBusinessDetailsSliceState &
+  BusinessSetupSliceState;
 
-type StoreActions = AuthSliceAction & AddBusinessDetailsSliceAction;
+type StoreActions = AuthSliceAction &
+  AddBusinessDetailsSliceAction &
+  BusinessSetupSliceAction;
+
 export const useBoundStore = create<StoreState & StoreActions>()((...a) => ({
   ...createAuthSlice(...a),
   ...createAddBusinessDetailsSliceState(...a),
+  ...createBusinessSetupSlice(...a),
 }));
