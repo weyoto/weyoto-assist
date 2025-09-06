@@ -1,35 +1,42 @@
+import { businessDetails } from "@/types/BusinessDetailsType";
 import { BusinessDoc } from "@/types/BusinessDocsType";
 import { StateCreator } from "zustand";
 
 export type AddBusinessDetailsSliceState = {
   tempBusinessDocs: BusinessDoc[];
   chatText: string;
-  businessDetails: string;
+  businessDetails: businessDetails[];
   isEditingDetails: boolean;
   tempDetails: string;
   isAddingDetails: boolean;
   newDetails: string;
+  editingDetailId: string | null;
+  editingValue: string;
 };
 
 export type AddBusinessDetailsSliceAction = {
   setTempBusinessDocs: (tempBusinessDocs: BusinessDoc[]) => void;
   setChatText: (chatText: string) => void;
-  setBusinessDetails: (businessDetails: string) => void;
+  setBusinessDetails: (businessDetails: businessDetails[]) => void;
   setIsEditingDetails: (isEditingDetails: boolean) => void;
   setTempDetails: (tempDetails: string) => void;
   setIsAddingDetails: (isAddingDetails: boolean) => void;
 
   setNewDetails: (newDetails: string) => void;
+  setEditingDetailId: (editingDetailId: string | null) => void;
+  setEditingValue: (editingValue: string) => void;
 };
 
 const initialState: AddBusinessDetailsSliceState = {
   tempBusinessDocs: [],
   chatText: "",
-  businessDetails: "",
+  businessDetails: [],
   isEditingDetails: false,
   tempDetails: "",
   isAddingDetails: false,
   newDetails: "",
+  editingDetailId: null,
+  editingValue: "",
 };
 
 export const createAddBusinessDetailsSliceState: StateCreator<
@@ -43,6 +50,8 @@ export const createAddBusinessDetailsSliceState: StateCreator<
   setTempDetails: (tempDetails) => set({ tempDetails }),
   setIsAddingDetails: (isAddingDetails) => set({ isAddingDetails }),
   setNewDetails: (newDetails) => set({ newDetails }),
+  setEditingDetailId: (editingDetailId) => set({ editingDetailId }),
+  setEditingValue: (editingValue) => set({ editingValue }),
   //connectSliceReset: () => set(initialState),
   /*  setEmail: (email) => set({ email }),
 

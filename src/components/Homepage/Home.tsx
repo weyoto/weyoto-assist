@@ -26,7 +26,7 @@ export default function BusinessDashboard() {
   });
 
   const [businessProfile, businessInquiries, businessDetails] = results;
-  console.log({ businessDetails: businessDetails.data });
+  ///  console.log({ businessDetails: businessDetails.data });
 
   if (
     businessProfile.isLoading ||

@@ -5,7 +5,7 @@ const BusinessLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <section>
       <main>{children}</main>
-      <div>
+      <div className=" overflow-y-auto">
         <ChatBox />
       </div>
     </section>

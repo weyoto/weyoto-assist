@@ -1,22 +1,21 @@
 import { toast } from "sonner";
 import { baseUrl } from "../baseUrl";
+//import { BusinessProfileResponse } from "@/types/ViewBusinessProfileResult";
 import { token } from "@/utils/token";
-//import Cookies from "universal-cookie";
+import { UploadedFileResponse } from "@/types/BusinessDocsType";
 
-export const setupBusiness = async (name: string, description: string) => {
+export const viewFiles = async (): Promise<
+  UploadedFileResponse | undefined
+> => {
   try {
-    const response = await fetch(`${baseUrl}/business/setup`, {
-      method: "POST",
+    // console.log({ token });
+    const response = await fetch(`${baseUrl}/files/view-files`, {
+      method: "GET",
       headers: {
         accept: "Application/json",
         "content-type": "Application/json",
         Authorization: `Bearer ${token}`,
       },
-
-      body: JSON.stringify({
-        name,
-        description,
-      }),
     });
 
     const result = await response.json();
@@ -27,7 +26,7 @@ export const setupBusiness = async (name: string, description: string) => {
       return;
     }
 
-    toast.success("Business setup complete");
+    toast.success(result.message);
     /* 
     cookies.set(result, true, {
       expires: new Date(twoWeeksFromToday.setDate(today.getDate() + 14)),

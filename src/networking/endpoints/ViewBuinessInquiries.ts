@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import { baseUrl } from "../baseUrl";
 import { ViewBusinessInquiriesReponse } from "@/types/ViewBusinessInquiriesResult";
+import { token } from "@/utils/token";
 
 export const viewBusinessInquiries = async (): Promise<
   ViewBusinessInquiriesReponse | undefined
@@ -11,7 +12,7 @@ export const viewBusinessInquiries = async (): Promise<
       headers: {
         accept: "Application/json",
         "content-type": "Application/json",
-        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNDYxOTk3NzMtZDMzMC00ODU4LWJhN2YtYWE5NzNjNDA4MzkxIiwiZXhwIjoxNzcyNjA2NjY5fQ.nmw2alFJCd4LkFy81iuKFmRCw1-HxDeDmMaBnGBR418"}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 

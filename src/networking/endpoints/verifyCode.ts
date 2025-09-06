@@ -27,11 +27,13 @@ export const verifyCode = async (email: string, code: string) => {
       return;
     }
 
-    toast.success(result.message);
-    /* 
-    cookies.set(result, true, {
+    //console.log(result, ";");
+
+    toast.success("Email verifified Successfuly");
+
+    cookies.set("authToken", result.jwt_token, {
       expires: new Date(twoWeeksFromToday.setDate(today.getDate() + 14)),
-    }); */
+    });
 
     return result;
   } catch (error) {

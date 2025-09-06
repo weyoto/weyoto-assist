@@ -1,4 +1,6 @@
+import { businessDetails } from "./BusinessDetailsType";
+
 export interface ViewBusinessDetailsReponse {
-  details: [];
-  success: boolean;
+  details: businessDetails[];
+  //success: boolean;
 }

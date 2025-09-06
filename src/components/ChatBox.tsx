@@ -5,7 +5,13 @@ import { Check, Send, Upload } from "lucide-react";
 import { Input } from "./ui/input";
 import { useRouter, usePathname } from "next/navigation";
 import { useBoundStore } from "@/store/store";
-import { BusinessDoc } from "@/types/BusinessDocsType";
+import { UploadedFile } from "@/types/BusinessDocsType";
+import { addBusinessDetails } from "@/networking/endpoints/addBusinessDetails";
+import { toast } from "sonner";
+import Spinner from "./Spinner";
+import { useQueryClient } from "@tanstack/react-query";
+import { uploadFile } from "@/networking/endpoints/uploadFile";
+import { businessInquiry } from "@/networking/endpoints/businessInquiry";
 
 /* interface BusinessDoc {
   id: string;
@@ -16,16 +22,20 @@ import { BusinessDoc } from "@/types/BusinessDocsType";
 const ChatBox = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
   const chatText = useBoundStore((state) => state.chatText);
   const setChatText = useBoundStore((state) => state.setChatText);
-  const setIsBusinessDetails = useBoundStore(
-    (state) => state.setBusinessDetails
-  );
+  const setBusinessDetails = useBoundStore((state) => state.setBusinessDetails);
+  const businessDetails = useBoundStore((state) => state.businessDetails);
   const tempBusinessDocs = useBoundStore((state) => state.tempBusinessDocs);
 
   const setTempBusinessDocs = useBoundStore(
     (state) => state.setTempBusinessDocs
   );
+  const setIsAddingBusinessDetails = useBoundStore(
+    (state) => state.setIsAddingDetails
+  );
+  const isAddingDetails = useBoundStore((state) => state.isAddingDetails);
 
   /*  const [docs, setDocs] = useState<BusinessDoc[]>([
     { id: "1", name: "Lisa's Cakes pricing doc.pdf", type: "pdf" },
@@ -45,9 +55,33 @@ const ChatBox = () => {
     setChatText("");
   }; */
 
-  const addBusinessDetails = () => {
-    setIsBusinessDetails(chatText);
-    setChatText("");
+  const handleAddBusinessDetails = async () => {
+    if (!isAddDetailsPage) {
+      console.log({ isAddDetailsPage });
+      await businessInquiry(chatText);
+      return;
+    }
+    try {
+      setIsAddingBusinessDetails(true);
+      const result = await addBusinessDetails(chatText);
+
+      if (!result) return;
+      setBusinessDetails([
+        ...businessDetails,
+        {
+          value: chatText,
+          label: null,
+          created_at: Date.now().toString(),
+          id: Date.now().toString(),
+        },
+      ]);
+      queryClient.invalidateQueries({ queryKey: ["businessDetails"] });
+      setChatText("");
+    } catch {
+      toast.error("An error occured");
+    } finally {
+      setIsAddingBusinessDetails(false);
+    }
   };
 
   const placeholder = isAddDetailsPage
@@ -84,35 +118,58 @@ const ChatBox = () => {
     }
   };
  */
-  const handleUploadDocs = () => {
-    // Simulate file upload
+  const handleUploadDocs = async () => {
     const input = document.createElement("input");
     input.type = "file";
     input.multiple = true;
     input.accept = ".pdf,.doc,.docx";
-    input.onchange = (e) => {
+
+    input.onchange = async (e) => {
       const files = (e.target as HTMLInputElement).files;
-      if (files) {
-        Array.from(files).forEach((file, index) => {
-          const url = URL.createObjectURL(file);
-          const newDoc: BusinessDoc = {
-            id: Date.now().toString() + index,
-            name: file.name,
-            type: file.name.endsWith(".pdf") ? "pdf" : "docx",
-            file: file,
-            url: url,
-          };
-          setTempBusinessDocs([...tempBusinessDocs, newDoc]);
-        });
+      if (files && files.length > 0) {
+        const fileArray = Array.from(files);
+
+        // Show loading state by adding temp docs
+        const tempDocs: UploadedFile[] = fileArray.map((file, index) => ({
+          id: Date.now().toString() + index,
+          filename: file.name,
+          filetype: file.name.endsWith(".pdf") ? "pdf" : "docx",
+          file: file,
+          embedded_at: Date.now().toString() + index,
+          //filename: string;Date.now().toString() + index,
+          //filetype: "pdf" | "docx" | string; // Extend if needed
+          // id: number | string;
+          num_chunks: 16,
+          parsed_at: Date.now().toString(),
+          status: "embedded",
+          uploaded_at: Date.now().toString(),
+          //url: URL.createObjectURL(file),
+        }));
+
+        setTempBusinessDocs([...tempBusinessDocs, ...tempDocs]);
+
+        // Upload files to server
+        const uploadResult = await uploadFile(fileArray[0]);
+
+        if (uploadResult) {
+          // Clear temp docs and refresh the files list
+          setTempBusinessDocs([]);
+          // Invalidate queries to refresh the files from server
+          queryClient.invalidateQueries({ queryKey: ["uploadedFiles"] });
+        } else {
+          // Remove temp docs if upload failed
+          setTempBusinessDocs(tempBusinessDocs);
+        }
       }
     };
+
     input.click();
   };
 
-  console.log({ tempBusinessDocs });
+  console.log({ tempBusinessDocs: tempBusinessDocs[0]?.file });
 
   return (
-    <div className="fixed bottom-0 left-5 right-5 bg-white ">
+    <div className=" overflow-y-auto bg-white ">
       <div className="flex gap-2 mb-[1rem]">
         <Button
           className="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm"
@@ -169,12 +226,16 @@ const ChatBox = () => {
             Add business details
           </Button>
           <Button
-            onClick={addBusinessDetails}
+            onClick={handleAddBusinessDetails}
             size="sm"
             className="bg-[#D9D9D9] p-[0.5rem] rounded-full text-gray-700 hover:bg-gray-200 "
             variant="secondary"
           >
-            <SendIcon size={16} className="w-6 h-6" />
+            {isAddingDetails ? (
+              <Spinner />
+            ) : (
+              <SendIcon size={16} className="w-6 h-6" />
+            )}
           </Button>
         </div>
       </div>
