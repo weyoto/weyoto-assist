@@ -1,7 +1,7 @@
 "use client";
 
 //import { useState } from "react";
-import { Menu, Share } from "lucide-react";
+
 //import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -53,9 +53,9 @@ export default function BusinessOnboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white  sm:w-1/2 sm:mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-100">
+      {/*   <div className="flex items-center justify-between p-4 border-b border-gray-100">
         <Menu className="w-6 h-6 text-gray-600" />
         <div className="flex items-center gap-2">
           <span className="text-lg font-medium text-gray-900">
@@ -64,10 +64,10 @@ export default function BusinessOnboarding() {
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
         </div>
         <Share className="w-6 h-6 text-gray-600" />
-      </div>
+      </div> */}
 
       {/* Main Content */}
-      <div className="p-6 space-y-8">
+      <div className="p-6 pb-36 space-y-8">
         {/* Welcome Section */}
         <div className="space-y-3">
           <h1 className="text-2xl font-semibold text-gray-900">

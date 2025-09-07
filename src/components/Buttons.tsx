@@ -17,7 +17,7 @@ const Buttons = ({
     <Button
       onClick={handlePress}
       disabled={disabled || isLoading}
-      className={`w-full h-[2.75rem] text-lg rounded-md ${
+      className={`w-full h-[2.75rem] text-lg rounded-md  ${
         disabled ? "opacity-50" : ""
       }`}
     >

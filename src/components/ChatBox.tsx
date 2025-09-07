@@ -12,6 +12,7 @@ import Spinner from "./Spinner";
 import { useQueryClient } from "@tanstack/react-query";
 import { uploadFile } from "@/networking/endpoints/uploadFile";
 import { businessInquiry } from "@/networking/endpoints/businessInquiry";
+import { ChatMessageType } from "@/store/slice/businessSetupSlice";
 
 /* interface BusinessDoc {
   id: string;
@@ -28,6 +29,10 @@ const ChatBox = () => {
   const setBusinessDetails = useBoundStore((state) => state.setBusinessDetails);
   const businessDetails = useBoundStore((state) => state.businessDetails);
   const tempBusinessDocs = useBoundStore((state) => state.tempBusinessDocs);
+  const addChatMessage = useBoundStore((state) => state.addChatMessage);
+  const setIsBusinessBotThinking = useBoundStore(
+    (state) => state.setIsBusinessBotThinking
+  );
 
   const setTempBusinessDocs = useBoundStore(
     (state) => state.setTempBusinessDocs
@@ -56,12 +61,33 @@ const ChatBox = () => {
   }; */
 
   const handleAddBusinessDetails = async () => {
-    if (!isAddDetailsPage) {
-      console.log({ isAddDetailsPage });
-      await businessInquiry(chatText);
-      return;
-    }
     try {
+      if (!isAddDetailsPage) {
+        const userMessage: ChatMessageType = {
+          id: Date.now().toString(),
+          text: chatText,
+          isUser: true,
+          timestamp: new Date(),
+        };
+        // Add user message to chat
+        addChatMessage(userMessage);
+        const currentMessage = chatText;
+        setChatText("");
+        setIsBusinessBotThinking(true);
+        const result = await businessInquiry(currentMessage);
+
+        // Add AI response to chat
+        if (result?.reply) {
+          const aiMessage: ChatMessageType = {
+            id: (Date.now() + 1).toString(),
+            text: result.reply,
+            isUser: false,
+            timestamp: new Date(),
+          };
+          addChatMessage(aiMessage);
+          return;
+        }
+      }
       setIsAddingBusinessDetails(true);
       const result = await addBusinessDetails(chatText);
 
@@ -81,6 +107,7 @@ const ChatBox = () => {
       toast.error("An error occured");
     } finally {
       setIsAddingBusinessDetails(false);
+      setIsBusinessBotThinking(false);
     }
   };
 
@@ -166,11 +193,11 @@ const ChatBox = () => {
     input.click();
   };
 
-  console.log({ tempBusinessDocs: tempBusinessDocs[0]?.file });
+  //console.log({ tempBusinessDocs: tempBusinessDocs[0]?.file });
 
   return (
-    <div className=" overflow-y-auto bg-white ">
-      <div className="flex gap-2 mb-[1rem]">
+    <div className="fixed bottom-0 sm:left-[10.8125rem] sm:right-[10.8125rem]  left-5 right-5 bg-white overflow-y-auto ">
+      {/*  <div className="flex gap-2 mb-[1rem]">
         <Button
           className="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm"
           variant="secondary"
@@ -189,7 +216,7 @@ const ChatBox = () => {
         >
           Wri...
         </Button>
-      </div>
+      </div> */}
       {/* Message Input */}
       <div className="p-4 border-b border-gray-100 bg-[#F5F5F5] border-t border-gray-100 rounded-2xl">
         <div className="flex items-center gap-2">

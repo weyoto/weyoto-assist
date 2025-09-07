@@ -28,7 +28,7 @@ const GetStarted = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 sm:w-1/2 sm:mx-auto">
       <nav className="gap-[0.75rem] flex flex-col mb-6">
         <Image width={48} height={48} alt="logo" src={"/logo.svg"} />
 
@@ -44,7 +44,7 @@ const GetStarted = () => {
         />
       </div>
 
-      <div className="bottom-10 absolute right-6 left-6 ">
+      <div className="bottom-10 absolute right-6 left-6 sm:w-1/2 sm:mx-auto ">
         <p className="text-center">
           By proceeding you agree with our{" "}
           <span>Terms of use and Privacy policy</span>

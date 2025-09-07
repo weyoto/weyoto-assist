@@ -28,13 +28,13 @@ const VerifyEmail = () => {
     }
   };
   return (
-    <div className="p-6">
+    <div className="p-6 sm:w-1/2 sm:mx-auto">
       <div className="flex flex-col items-center justify-center gap-[0.75rem] mb-[2rem]">
         <Image width={48} height={48} alt="logo" src={"/logo.svg"} />
         <h1 className="font-bold text-2xl">We emailed you a code</h1>
         <div className="text-center ">
           <p>Enter the verification code sent to:</p>
-          <h4>ehigieedoma@youremail.com</h4>
+          <h4>{loginEmail}</h4>
         </div>
       </div>
 

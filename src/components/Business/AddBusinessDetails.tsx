@@ -148,7 +148,7 @@ const AddBusinessDetails = () => {
   const totalDocsCount = (tempBusinessDocs?.length || 0) + serverFiles.length;
 
   return (
-    <div className="bg-white gap-[5rem] p-6 ">
+    <div className="bg-white gap-[5rem] p-6">
       {/* Welcome Section */}
 
       <button onClick={goBack} className="flex justify-end w-full ">
@@ -160,7 +160,7 @@ const AddBusinessDetails = () => {
         </h1>
         <p className="text-gray-600 text-sm leading-relaxed">
           You’ve added {businessDetails.data?.details?.length} business details
-          & {tempBusinessDocs?.length} docs
+          & {serverFiles?.length} docs
         </p>
       </div>
 
@@ -281,11 +281,11 @@ const AddBusinessDetails = () => {
                 </div>
               ))}
 
-              {totalDocsCount > 2 && (
+              {/*  {totalDocsCount > 2 && (
                 <button className="text-sm text-blue-600 hover:text-blue-700">
                   View more
                 </button>
-              )}
+              )} */}
             </CardContent>
           </div>
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 //import { useState } from "react";
-import { Menu, Share } from "lucide-react";
+import { Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useQueries } from "@tanstack/react-query";
@@ -10,10 +10,14 @@ import { viewBusinessProfile } from "@/networking/endpoints/ViewBusinessProfile"
 import { viewBusinessInquiries } from "@/networking/endpoints/ViewBuinessInquiries";
 import { toast } from "sonner";
 import { viewUser } from "@/networking/endpoints/viewUser";
+import { viewFiles } from "@/networking/endpoints/viewFiles";
+import { UploadedFile } from "@/types/BusinessDocsType";
+import { useBoundStore } from "@/store/store";
+import BusinessChatDisplay from "../Business/BusinessChatDisplay";
 
 export default function BusinessDashboard() {
   const router = useRouter();
-
+  const chatMessages = useBoundStore((state) => state.chatMessages);
   const goToProfile = () => {
     router.push("/profile");
   };
@@ -24,12 +28,18 @@ export default function BusinessDashboard() {
       { queryKey: ["businessInquiries"], queryFn: viewBusinessInquiries },
       { queryKey: ["businessDetails"], queryFn: viewBusinessDetails },
       { queryKey: ["userDetails"], queryFn: viewUser },
+      { queryKey: ["uploadedFiles"], queryFn: viewFiles },
       // { queryKey: ["todos"], queryFn: fetchTodos },
     ],
   });
 
-  const [businessProfile, businessInquiries, businessDetails, userDetails] =
-    results;
+  const [
+    businessProfile,
+    businessInquiries,
+    businessDetails,
+    userDetails,
+    uploadedFiles,
+  ] = results;
   ///  console.log({ businessDetails: businessDetails.data });
 
   if (
@@ -60,17 +70,23 @@ export default function BusinessDashboard() {
     }
   };
 
+  const serverFiles: UploadedFile[] = uploadedFiles.data?.[1]?.files || [];
+
+  if (chatMessages?.length > 0) {
+    return <BusinessChatDisplay />;
+  }
+
   return (
-    <div className="min-h-screen bg-white">
-      <div className="bg-red-500 text-white text-center py-2 px-4">
+    <div className="bg-white ">
+      {/* <div className="bg-red-500 text-white text-center py-2 px-4">
         <p className="text-sm font-medium">
           Add business details to activate public link
         </p>
-      </div>
+      </div> */}
 
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-100">
-        <Menu className="w-6 h-6 text-gray-600" />
+        {/*   <Menu className="w-6 h-6 text-gray-600" /> */}
         <div onClick={goToProfile} className="flex items-center gap-2">
           <span className="text-lg font-medium text-gray-900">
             {businessProfile.data?.business.name}
@@ -119,7 +135,7 @@ export default function BusinessDashboard() {
           <div className="space-y-2">
             <p className="text-gray-900 font-medium">
               You have {businessDetails.data?.details?.length} business details
-              & docs
+              & {serverFiles.length} docs
             </p>
             <p className="text-gray-500 text-sm">
               To get smarter, I need to know more about your business.
