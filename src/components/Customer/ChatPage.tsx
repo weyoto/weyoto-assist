@@ -3,18 +3,11 @@ import CustomerChatBox from "./CustomerChatBox";
 import { useBoundStore } from "@/store/store";
 import ChatPageWelcomeDisplay from "./ChatPageWelcomeDisplay";
 import TypingIndicator from "./TypingIndicator";
-import { useQueries } from "@tanstack/react-query";
 
 export default function ChatPage() {
   const messages = useBoundStore((state) => state.messages);
   const isMessageSending = useBoundStore((state) => state.isMessageSending);
 
-  const results = useQueries({
-    queries: [
-      // { queryKey: ["businessDetails"], queryFn: viewBusinessDetails },
-      // { queryKey: ["todos"], queryFn: fetchTodos },
-    ],
-  });
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-md mx-auto">
       {/* Header */}

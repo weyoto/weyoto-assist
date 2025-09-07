@@ -7,8 +7,6 @@ import { useParams, usePathname } from "next/navigation";
 import { useBoundStore } from "@/store/store";
 import { useSearchParams } from "next/navigation";
 
-import Spinner from "../Spinner";
-import { useQueryClient } from "@tanstack/react-query";
 import { startThread } from "@/networking/endpoints/customerChatEndpoints/startThread";
 import { message } from "@/networking/endpoints/customerChatEndpoints/mesage";
 import { toast } from "sonner";
@@ -25,7 +23,7 @@ const CustomerChatBox = () => {
   const threadId = useBoundStore((state) => state.threadId);
   const setThreadId = useBoundStore((state) => state.setThreadId);
   const pathname = usePathname();
-  const queryClient = useQueryClient();
+
   const uParams = useSearchParams();
   const chatText = useBoundStore((state) => state.chatText);
   const setChatText = useBoundStore((state) => state.setChatText);

@@ -1,5 +1,5 @@
 import { baseUrl } from "@/networking/baseUrl";
-import { MessagesResponseType, MessagesType } from "@/types/MessagesType";
+import { MessagesResponseType } from "@/types/MessagesType";
 import { toast } from "sonner";
 //import { startThread } from "./startThread";
 
