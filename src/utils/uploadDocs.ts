@@ -1,7 +1,7 @@
-import { BusinessDoc } from "@/types/BusinessDocsType";
+/* import { UploadedFile } from "@/types/BusinessDocsType";
 
 export const uploadDocs = () => {
-  let uploadedDoc: BusinessDoc | null = null;
+  let uploadedDoc: UploadedFile | null = null;
   const input = document.createElement("input");
   input.type = "file";
   input.multiple = true;
@@ -11,7 +11,7 @@ export const uploadDocs = () => {
     if (files) {
       Array.from(files).forEach((file, index) => {
         const url = URL.createObjectURL(file);
-        const newDoc: BusinessDoc = {
+        const newDoc: UploadedFile = {
           id: Date.now().toString() + index,
           name: file.name,
           type: file.name.endsWith(".pdf") ? "pdf" : "docx",
@@ -28,3 +28,4 @@ export const uploadDocs = () => {
   input.click();
   return uploadedDoc;
 };
+ */
