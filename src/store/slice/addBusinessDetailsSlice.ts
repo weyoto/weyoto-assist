@@ -1,9 +1,9 @@
 import { businessDetails } from "@/types/BusinessDetailsType";
-import { BusinessDoc } from "@/types/BusinessDocsType";
+import { UploadedFile } from "@/types/BusinessDocsType";
 import { StateCreator } from "zustand";
 
 export type AddBusinessDetailsSliceState = {
-  tempBusinessDocs: BusinessDoc[];
+  tempBusinessDocs: UploadedFile[];
   chatText: string;
   businessDetails: businessDetails[];
   isEditingDetails: boolean;
@@ -15,7 +15,7 @@ export type AddBusinessDetailsSliceState = {
 };
 
 export type AddBusinessDetailsSliceAction = {
-  setTempBusinessDocs: (tempBusinessDocs: BusinessDoc[]) => void;
+  setTempBusinessDocs: (tempBusinessDocs: UploadedFile[]) => void;
   setChatText: (chatText: string) => void;
   setBusinessDetails: (businessDetails: businessDetails[]) => void;
   setIsEditingDetails: (isEditingDetails: boolean) => void;

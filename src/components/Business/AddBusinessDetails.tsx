@@ -267,7 +267,7 @@ const AddBusinessDetails = () => {
                   >
                     <FileText className="h-5 w-5 text-purple-600" />
                     <span className="text-sm text-gray-700 flex-1">
-                      {doc.name}
+                      {doc.filename}
                     </span>
                     <span className="text-xs text-gray-500 block">
                       Uploading...
@@ -275,7 +275,7 @@ const AddBusinessDetails = () => {
                   </div>
 
                   <X
-                    onClick={() => handleRemoveBusinessDocs(doc.id)}
+                    onClick={() => handleRemoveBusinessDocs(doc.id.toString())}
                     className="h-4 w-1/12 text-gray-500 cursor-pointer"
                   />
                 </div>

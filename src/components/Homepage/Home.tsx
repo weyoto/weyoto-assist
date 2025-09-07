@@ -8,6 +8,8 @@ import { useQueries } from "@tanstack/react-query";
 import { viewBusinessDetails } from "@/networking/endpoints/ViewBusinessDetails";
 import { viewBusinessProfile } from "@/networking/endpoints/ViewBusinessProfile";
 import { viewBusinessInquiries } from "@/networking/endpoints/ViewBuinessInquiries";
+import { toast } from "sonner";
+import { viewUser } from "@/networking/endpoints/viewUser";
 
 export default function BusinessDashboard() {
   const router = useRouter();
@@ -21,11 +23,13 @@ export default function BusinessDashboard() {
       { queryKey: ["businessProfile"], queryFn: viewBusinessProfile },
       { queryKey: ["businessInquiries"], queryFn: viewBusinessInquiries },
       { queryKey: ["businessDetails"], queryFn: viewBusinessDetails },
+      { queryKey: ["userDetails"], queryFn: viewUser },
       // { queryKey: ["todos"], queryFn: fetchTodos },
     ],
   });
 
-  const [businessProfile, businessInquiries, businessDetails] = results;
+  const [businessProfile, businessInquiries, businessDetails, userDetails] =
+    results;
   ///  console.log({ businessDetails: businessDetails.data });
 
   if (
@@ -41,6 +45,20 @@ export default function BusinessDashboard() {
     businessDetails.isError
   )
     return "An error has occurred: "; //+ error.message;
+
+  // 📌 Function to copy /chat link to clipboard
+  const handleCopyLink = async () => {
+    try {
+      const chatLink = `${window.location.origin}/chat/${businessProfile.data?.business.id}?u=${userDetails.data?.id}`;
+
+      console.log({ chatLink });
+      await navigator.clipboard.writeText(chatLink);
+      toast.success("Link copied! 🎉"); // Optional toast notification
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      toast.error("Failed to copy link");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -59,7 +77,7 @@ export default function BusinessDashboard() {
           </span>
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
         </div>
-        <Share className="w-6 h-6 text-gray-600" />
+        <Share onClick={handleCopyLink} className="w-6 h-6 text-gray-600" />
       </div>
 
       <div className="p-6 space-y-6 pb-32">

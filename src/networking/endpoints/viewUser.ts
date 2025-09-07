@@ -2,8 +2,9 @@ import { toast } from "sonner";
 import { baseUrl } from "../baseUrl";
 
 import { token } from "@/utils/token";
+import { UserType } from "@/types/UserType";
 
-export const viewUser = async () => {
+export const viewUser = async (): Promise<UserType | undefined> => {
   try {
     const response = await fetch(`${baseUrl}/auth/view-user`, {
       method: "GET",
