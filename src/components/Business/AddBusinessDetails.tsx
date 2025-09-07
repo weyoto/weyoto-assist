@@ -145,7 +145,6 @@ const AddBusinessDetails = () => {
   };
 
   const serverFiles: UploadedFile[] = uploadedFiles.data?.[1]?.files || [];
-  const totalDocsCount = (tempBusinessDocs?.length || 0) + serverFiles.length;
 
   return (
     <div className="bg-white gap-[5rem] p-6">
