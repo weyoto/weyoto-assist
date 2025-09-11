@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CustomerChatBox from "./CustomerChatBox";
 import { useBoundStore } from "@/store/store";
 import ChatPageWelcomeDisplay from "./ChatPageWelcomeDisplay";
