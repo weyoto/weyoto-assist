@@ -46,14 +46,14 @@ export default function ChatPage() {
       )}
 
       {/* Chat Avatar */}
-      <div className="px-6 pb-4">
+      {/*   <div className="px-6 pb-4">
         <Avatar className="h-10 w-10">
           <AvatarImage src="/bakery-assistant-avatar.jpg" />
           <AvatarFallback className="bg-gray-300 text-gray-600">
             LC
           </AvatarFallback>
         </Avatar>
-      </div>
+      </div> */}
 
       {/* Spacer to push input to bottom */}
       <div className="flex-1" />
